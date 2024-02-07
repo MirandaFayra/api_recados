@@ -1,4 +1,4 @@
-- 1. Endpoint criar conta
+- 1. Endpoint criar conta - OK
 - 2. Endpoint para login 
 - 3. Criar uma mensagem 
 - 5. Ler mensagem 

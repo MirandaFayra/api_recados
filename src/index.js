@@ -63,6 +63,35 @@ app.post('/signup',(req,res)=>{
     
 }) 
 
+//--------- LOGIN -------- 
+
+app.post('/login',(req,res)=>{
+    const{email, password} = req.body 
+
+    const userVerify = users.find(user => user.email === email) 
+
+    if(!userVerify){
+        return res.status(400).json({
+            message: 'This email does not exist in database'
+        })
+    }
+
+    res.status(200).json({
+        message: "Welcome! You have successfully in tour login",
+        email
+    })
+
+})
+
+//--------- GET USERS -------- 
+
+app.get('/users',(req,res)=>{
+    res.status(200).json({
+        sucess: true,
+        users
+    })
+})
+
 //------- VERIFY----
 
 app.listen(3333, ()=>{
