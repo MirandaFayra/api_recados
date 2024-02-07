@@ -1,7 +1,7 @@
 - 1. Endpoint criar conta - OK
 - 2. Endpoint para login - OK (fazer criptografia)
-- 3. Criar uma mensagem 
-- 5. Ler mensagem 
+- 3. Criar uma mensagem - OK
+- 5. Ler mensagem  - OK (fazer um endpoint que filtra por uma determianda mensagem)
 - 6. Atualizar mensagem 
 - 7. Deletar mensagem 
 

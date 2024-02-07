@@ -121,6 +121,60 @@ app.post('/massage',(req,res)=>{
     nextMessageId++
 })
 
+//------------- READ MASSAGE -------
+
+app.get ('/massage/:email',(req, res) => {
+    const email= req.params.email
+
+    const userVerify = users.find(user => user.email === email ) 
+
+    if(!userVerify){
+        res.status(404).json({
+            sucess: false,
+            message: "Please enter a valid email to send a message"
+        })
+    }
+
+    res.status(201).json({
+        sucess: true,
+        data: messages
+    })
+
+})
+
+//------------- UPDATE MASSAGE -------
+
+app.put('/massage/:id',(req,res)=>{
+    const{title,description} = req.body
+    const id = Number(req.params.id)
+
+    const verifyMessageId = messages.find(message => message.id === id)
+
+    if(!verifyMessageId){
+        res.status(404).json({
+            sucess: false,
+            message: "Please enter a valid message id to send a message"
+        })
+    }
+
+    const updateMesage ={
+        id: nextMessageId ,
+        title: title,
+        description: description
+    }
+
+    messages.push(updateMesage)
+
+    res.status(200).json({
+        sucess:true,
+        message: "Message update sucessfuly"
+    })
+    
+})
+
+
+
+
 //------- VERIFY----
 
 app.listen(3333, ()=>{
