@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 let users = []
-let menssage = []
+let messages = []
 
 let nextUserId = 1 
 
@@ -54,8 +54,6 @@ app.post('/signup',(req,res)=>{
 
     nextUserId ++
 
-    console.log(newUser)
-
     res.status(201).json({
         sucess: true,
         message: ' User registered successfully'
@@ -90,6 +88,37 @@ app.get('/users',(req,res)=>{
         sucess: true,
         users
     })
+})
+
+//---------- CREATE MASSAGE ----- 
+
+app.post('/massage',(req,res)=>{
+    const {email,title,description} = req.body
+    
+    const userVerify = users.find(user => user.email === email) 
+
+    if(!userVerify){
+        res.status(404).json({
+            sucess: false,
+            message: "Please enter a valid email to send a message"
+        })
+    }
+
+    const newMesage ={
+        id: nextMessageId ,
+        title: title,
+        description: description
+    }
+
+    messages.push(newMesage)
+    
+    res.status(201).json({
+        sucess: true,
+        message: ' Message registered successfully'
+    })
+
+
+    nextMessageId++
 })
 
 //------- VERIFY----
