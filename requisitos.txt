@@ -1,0 +1,11 @@
+- 1. Endpoint criar conta
+- 2. Endpoint para login 
+- 3. Criar uma mensagem 
+- 5. Ler mensagem 
+- 6. Atualizar mensagem 
+- 7. Deletar mensagem 
+
+
+- Nome | Id | e-mail | senha  => 
+
+- Id |  Titulo | Descricao => pessoa
