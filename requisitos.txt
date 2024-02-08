@@ -3,7 +3,14 @@
 - 3. Criar uma mensagem - OK
 - 5. Ler mensagem  - OK (fazer um endpoint que filtra por uma determianda mensagem)
 - 6. Atualizar mensagem - OK
-- 7. Deletar mensagem 
+- 7. Deletar mensagem - OK 
+
+
+Melhorar : 
+
+    - Refatorar os endpoints fazendo as validações 
+    - Criar middleware para validar 
+
 
 
 - Nome | Id | e-mail | senha  => 
