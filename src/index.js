@@ -66,6 +66,19 @@ app.post('/signup',(req,res)=>{
 app.post('/login',(req,res)=>{
     const{email, password} = req.body 
 
+    if(!email){
+        return res.status(400).json({
+            message: 'Send a valid email'
+        })
+    }
+
+    if(!password){
+        return res.status(400).json({
+            message: 'Send a valid password'
+        })
+    }
+
+
     const userVerify = users.find(user => user.email === email) 
 
     if(!userVerify){
@@ -110,6 +123,8 @@ app.post('/massage',(req,res)=>{
         description: description
     }
 
+    nextMessageId++
+
     messages.push(newMesage)
     
     res.status(201).json({
@@ -117,8 +132,6 @@ app.post('/massage',(req,res)=>{
         message: ' Message registered successfully'
     })
 
-
-    nextMessageId++
 })
 
 //------------- READ MASSAGE -------
@@ -142,7 +155,7 @@ app.get ('/massage/:email',(req, res) => {
 
 })
 
-//------------- UPDATE MASSAGE -------
+//------------- UPDATE MESSAGE -------
 
 app.put('/massage/:id',(req,res)=>{
     const{title,description} = req.body
@@ -157,23 +170,44 @@ app.put('/massage/:id',(req,res)=>{
         })
     }
 
-    const updateMesage ={
-        id: nextMessageId ,
-        title: title,
-        description: description
+    const verifyMessageIndex = messages.findIndex((message)=> message.id === id)
+
+    if(verifyMessageIndex !== -1){
+        const message = messages[verifyMessageIndex]
+        message.title = title
+        message.description = description
+
+        res.status(200).json({
+            sucess:true,
+            message: "Message update sucessfuly"
+        })
+        
+    }else{
+        return res.status(404).json({
+            message: "Message not find"
+        })
     }
 
-    messages.push(updateMesage)
-
-    res.status(200).json({
-        sucess:true,
-        message: "Message update sucessfuly"
-    })
-    
 })
 
+//---------- DELETE MESSAGE ---------
 
+app.delete('/massage/:id',(req,res)=>{
+    const id = Number(req.params.id)
 
+    const messageIndex = messages.findIndex((message) => message.id === id)
+
+    if(messageIndex !== -1){
+        const deletedMessage = messages.splice(messageIndex, 1)
+
+        res.status(200).json({
+            message: "Product deleted sucessfuly!",
+            deletedMessage
+        })
+    }
+
+    
+})
 
 //------- VERIFY----
 
