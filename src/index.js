@@ -9,42 +9,42 @@ app.use(cors());
 let users = []
 let messages = []
 
-let nextUserId = 1 
+let nextUserId = 1
 
-let nextMessageId = 1 
+let nextMessageId = 1
 
 //------- TEST----
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.status(200).send('Welcome to this application');
 })
 
 //------- SIGNUP----
 
-app.post('/signup',(req,res)=>{
-    const {name, email , password} = req.body
+app.post('/signup', (req, res) => {
+    const { name, email, password } = req.body
 
-    
-    if(!name){
+
+    if (!name) {
         res.status(400).json({
             message: 'Please verify if you pass a valid name'
         })
     }
 
-    if(!email){
+    if (!email) {
         res.status(400).json({
             message: 'Please verify if you pass a valid  email adress'
         })
     }
 
-    if(!password){
+    if (!password) {
         res.status(400).json({
             message: 'Please verify if you pass a valid  password'
         })
     }
- 
+
     const newUser = {
-        id: nextUserId, 
+        id: nextUserId,
         name: name,
         email: email,
         password: password
@@ -52,36 +52,36 @@ app.post('/signup',(req,res)=>{
 
     users.push(newUser)
 
-    nextUserId ++
+    nextUserId++
 
     res.status(201).json({
         sucess: true,
         message: ' User registered successfully'
     })
-    
-}) 
+
+})
 
 //--------- LOGIN -------- 
 
-app.post('/login',(req,res)=>{
-    const{email, password} = req.body 
+app.post('/login', (req, res) => {
+    const { email, password } = req.body
 
-    if(!email){
+    if (!email) {
         return res.status(400).json({
             message: 'Send a valid email'
         })
     }
 
-    if(!password){
+    if (!password) {
         return res.status(400).json({
             message: 'Send a valid password'
         })
     }
 
 
-    const userVerify = users.find(user => user.email === email) 
+    const userVerify = users.find(user => user.email === email)
 
-    if(!userVerify){
+    if (!userVerify) {
         return res.status(400).json({
             message: 'This email does not exist in database'
         })
@@ -96,7 +96,7 @@ app.post('/login',(req,res)=>{
 
 //--------- GET USERS -------- 
 
-app.get('/users',(req,res)=>{
+app.get('/users', (req, res) => {
     res.status(200).json({
         sucess: true,
         users
@@ -105,20 +105,20 @@ app.get('/users',(req,res)=>{
 
 //---------- CREATE MASSAGE ----- 
 
-app.post('/massage',(req,res)=>{
-    const {email,title,description} = req.body
-    
-    const userVerify = users.find(user => user.email === email) 
+app.post('/massage', (req, res) => {
+    const { email, title, description } = req.body
 
-    if(!userVerify){
+    const userVerify = users.find(user => user.email === email)
+
+    if (!userVerify) {
         res.status(404).json({
             sucess: false,
             message: "Please enter a valid email to send a message"
         })
     }
 
-    const newMesage ={
-        id: nextMessageId ,
+    const newMesage = {
+        id: nextMessageId,
         title: title,
         description: description
     }
@@ -126,7 +126,7 @@ app.post('/massage',(req,res)=>{
     nextMessageId++
 
     messages.push(newMesage)
-    
+
     res.status(201).json({
         sucess: true,
         message: ' Message registered successfully'
@@ -134,55 +134,72 @@ app.post('/massage',(req,res)=>{
 
 })
 
-//------------- READ MASSAGE -------
+//------------- READ MESSAGE -------
 
-app.get ('/massage/:email',(req, res) => {
-    const email= req.params.email
+app.get('/massage', (req, res) => {
+    try {
+        // const email= req.params.email
 
-    const userVerify = users.find(user => user.email === email ) 
+        // const userVerify = users.find(user => user.email === email ) 
 
-    if(!userVerify){
-        res.status(404).json({
-            sucess: false,
-            message: "Please enter a valid email to send a message"
+        // if(!userVerify){
+        //     res.status(404).json({
+        //         sucess: false,
+        //         message: "Please enter a valid email to send a message"
+        //     })
+        // }
+
+        const limit = parseInt(req.query.limit);
+        const offset = parseInt(req.query.offset)
+
+        const positivePageCheck = (offset - 1) * limit;
+
+        const paginatedMessages = messages.slice(positivePageCheck, positivePageCheck + limit);
+
+        res.status(201).json({
+            sucess: true,
+            data: paginatedMessages,
+            message: "Produtos retornados com sucesso",
+            totalMessages: messages.length,
+            currentPage: Math.floor(positivePageCheck / limit) + 1,
+            totalPages: Math.ceil(messages.length / limit),
+            limitByPage: limit
         })
+    } catch (error) {
+        res.status(500).json({ message: "Erro interno" });
     }
 
-    res.status(201).json({
-        sucess: true,
-        data: messages
-    })
 
 })
 
 //------------- UPDATE MESSAGE -------
 
-app.put('/massage/:id',(req,res)=>{
-    const{title,description} = req.body
+app.put('/massage/:id', (req, res) => {
+    const { title, description } = req.body
     const id = Number(req.params.id)
 
     const verifyMessageId = messages.find(message => message.id === id)
 
-    if(!verifyMessageId){
+    if (!verifyMessageId) {
         res.status(404).json({
             sucess: false,
             message: "Please enter a valid message id to send a message"
         })
     }
 
-    const verifyMessageIndex = messages.findIndex((message)=> message.id === id)
+    const verifyMessageIndex = messages.findIndex((message) => message.id === id)
 
-    if(verifyMessageIndex !== -1){
+    if (verifyMessageIndex !== -1) {
         const message = messages[verifyMessageIndex]
         message.title = title
         message.description = description
 
         res.status(200).json({
-            sucess:true,
+            sucess: true,
             message: "Message update sucessfuly"
         })
-        
-    }else{
+
+    } else {
         return res.status(404).json({
             message: "Message not find"
         })
@@ -192,12 +209,12 @@ app.put('/massage/:id',(req,res)=>{
 
 //---------- DELETE MESSAGE ---------
 
-app.delete('/massage/:id',(req,res)=>{
+app.delete('/massage/:id', (req, res) => {
     const id = Number(req.params.id)
 
     const messageIndex = messages.findIndex((message) => message.id === id)
 
-    if(messageIndex !== -1){
+    if (messageIndex !== -1) {
         const deletedMessage = messages.splice(messageIndex, 1)
 
         res.status(200).json({
@@ -206,11 +223,11 @@ app.delete('/massage/:id',(req,res)=>{
         })
     }
 
-    
+
 })
 
 //------- VERIFY----
 
-app.listen(3333, ()=>{
+app.listen(3333, () => {
     console.log("Server is running in http://localhost:3333")
 })
